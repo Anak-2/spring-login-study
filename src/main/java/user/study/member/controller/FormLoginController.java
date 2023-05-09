@@ -1,8 +1,8 @@
 package user.study.member.controller;
 
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.ui.Model;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -15,16 +15,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.User;
 import user.study.member.service.UserService;
+import user.study.member.service.UserServiceImpl;
 
 import java.util.List;
 
 @Controller
 @RequestMapping("/form-login")
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @Slf4j
 public class FormLoginController {
 
     private final UserService userService;
+
+    public FormLoginController(@Qualifier("userServiceImpl") UserService userService){
+        this.userService = userService;
+    }
 
     @GetMapping(value={"", "/"})
     public String home(){

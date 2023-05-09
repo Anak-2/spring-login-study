@@ -23,11 +23,14 @@ public class LoginControllerAdvice {
         if(requestURI.contains("form-login")){
             model.addAttribute("loginType","form-login");
         }
-        if(requestURI.contains("cookie-login")){
+        else if(requestURI.contains("cookie-login")){
             model.addAttribute("loginType","cookie-login");
         }
-        if(requestURI.contains("session-login")){
+        else if(requestURI.contains("session-login")){
             model.addAttribute("loginType","session-login");
+        }
+        else if(requestURI.contains("security-login")){
+            model.addAttribute("loginType","security-login");
         }
     }
 

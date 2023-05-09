@@ -1,13 +1,12 @@
 package user.study.member.controller;
 
 import jakarta.servlet.http.Cookie;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -17,15 +16,21 @@ import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.User;
 import user.study.member.global.exception.NotAuthorizedException;
 import user.study.member.service.UserService;
+import user.study.member.service.UserServiceImpl;
 
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
 @RequestMapping(value="/cookie-login")
+//@RequiredArgsConstructor
 @Slf4j
 public class CookieLoginController {
+
     private final UserService userService;
+
+    public CookieLoginController(@Qualifier("userServiceImpl") UserService userService){
+        this.userService = userService;
+    }
 
     @GetMapping(value={"", "/"})
     public String home(@CookieValue(name="userName", required = false) String userName, Model model){

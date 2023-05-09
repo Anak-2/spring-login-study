@@ -1,32 +1,36 @@
 package user.study.member.controller;
 
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.server.Session;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.ServletRequestBindingException;
 import org.springframework.web.bind.annotation.*;
 import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.User;
 import user.study.member.global.exception.NotAuthorizedException;
 import user.study.member.service.UserService;
+import user.study.member.service.UserServiceImpl;
 
 import java.util.List;
 
 @Controller
-@RequiredArgsConstructor
+//@RequiredArgsConstructor
 @RequestMapping(value = "/session-login")
 @Slf4j
 public class SessionLoginController {
+
     private final UserService userService;
+
+    public SessionLoginController(@Qualifier("userServiceImpl") UserService userService){
+        this.userService = userService;
+    }
 
     @GetMapping(value = {"", "/"})
     public String home(@SessionAttribute(name = "userName", required = false) String userName, Model model){
