@@ -1,10 +1,7 @@
 package user.study.member.domain.user;
 
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.util.Assert;
 
@@ -13,6 +10,7 @@ import org.springframework.util.Assert;
 @Setter
 @Entity
 @NoArgsConstructor
+@ToString
 public class User{
     @Id
     @GeneratedValue
@@ -43,7 +41,7 @@ public class User{
     public User(String name, String pwd, Role role){
 //        Assert.hasText("name","name null");
 //        Assert.hasText("pwd","pwd null");
-        log.debug("builder name = {} pwd = {} role = {}",name,pwd,role);
+        log.debug("Call formBuilder name = {} pwd = {} role = {}",name,pwd,role);
         this.name = name;
         this.pwd = pwd;
         this.role = role;

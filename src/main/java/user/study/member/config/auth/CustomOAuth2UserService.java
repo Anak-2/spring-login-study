@@ -1,4 +1,4 @@
-package user.study.member.auth;
+package user.study.member.config.auth;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;

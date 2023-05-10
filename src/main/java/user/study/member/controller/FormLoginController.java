@@ -27,7 +27,7 @@ public class FormLoginController {
 
     private final UserService userService;
 
-    public FormLoginController(@Qualifier("userServiceImpl") UserService userService){
+    public FormLoginController(@Qualifier("userJpaServiceImpl") UserService userService){
         this.userService = userService;
     }
 
@@ -37,15 +37,19 @@ public class FormLoginController {
     }
 
     @GetMapping(value="/login")
-    public String loginPage(){
+    public String loginPage(Model model){
+        model.addAttribute("formUser", new FormUser());
         return "login";
     }
 
     @PostMapping(value="/login")
     public String login(@ModelAttribute FormUser formUser, Model model){
         log.info("input id: {} pwd: {}",formUser.getName(),formUser.getPwd());
-        List<User> users = userService.login(formUser.getName(), formUser.getPwd());
-        if(!users.isEmpty()) model.addAttribute("user",users.get(0));
+        User user = userService.login(formUser.toEntity());
+        if(user != null) {
+            model.addAttribute("user",user);
+            return "home"; // 페이지 이동할 때 url 변경하려면 redirect
+        }
         return "login";
     }
 
@@ -66,7 +70,7 @@ public class FormLoginController {
         if(bindingResult.hasErrors()){
             return "createForm";
         }
-        userService.join(formUser);
+        userService.join(formUser.toEntity());
         return "redirect:/form-login";
     }
 }

@@ -12,6 +12,7 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.User;
 import user.study.member.global.exception.NotAuthorizedException;
@@ -75,7 +76,7 @@ public class SessionLoginController {
     }
 
     @PostMapping(value = "/create")
-    public String createUser(@Valid @ModelAttribute FormUser formUser, BindingResult bindingResult) {
+    public String createUser(@Valid @ModelAttribute FormUser formUser, BindingResult bindingResult, RedirectAttributes redirectAttributes) {
         if (userService.checkNameDuplicate(formUser.getName())) {
             bindingResult.addError(new FieldError("formUser", "name", "ID 중복"));
         }
@@ -84,6 +85,14 @@ public class SessionLoginController {
             return "createForm";
         }
         userService.join(formUser);
+        /*
+        redirect 했을 때 객체 넘겨주는 방법 (addAttribute, addFlashAttribute 차이)
+        redirectAttributes.addAttribute("user",formUser.toEntity()); --> Url 로 넘겨주기 때문에 Controller 에서 RequestParam 으로 받아줘야한다
+        .addFlashAttribute() : Post 방식과 유사하게 Url에 포함 안하고, 세션으로 넘겨주기 때문에 Controller 에서 따로 처리 필요 없이 html까지 넘어간다.
+        단 1회성이기 때문에 넘겨준 뒤로 사라진다
+        */
+        redirectAttributes.addFlashAttribute("user",formUser.toEntity());
+        System.out.println(formUser.toEntity());
         return "redirect:/session-login";
     }
 

@@ -20,14 +20,13 @@ public class FormUser {
     private String pwd;
     private Role role = Role.USER;
 
-    //    User Entity 로 변환
+    //   DTO 를 Entity 로 변환
     public User toEntity() {
         User user = User.formBuilder()
-                .name(name)
-                .pwd(pwd)
-                .role(role)
+                .name(this.name)
+                .pwd(this.pwd)
+                .role(this.role)
                 .build();
-        log.debug("name = " + user.getName() + " pwd = " + user.getPwd());
         return user;
     }
 }

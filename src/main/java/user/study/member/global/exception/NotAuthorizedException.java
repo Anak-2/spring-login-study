@@ -1,6 +1,6 @@
 package user.study.member.global.exception;
 
-
+// Controller Advice 의 Exception Handler 로 처리
 public class NotAuthorizedException extends RuntimeException{
     public NotAuthorizedException() {
         super();
