@@ -10,11 +10,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import user.study.member.config.auth.PrincipalDetails;
+import user.study.member.config.oauth.PrincipalDetails2;
 import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
@@ -56,6 +54,16 @@ public class SecurityLoginController {
             model.addAttribute("user", user);
         }
         return "home";
+    }
+
+//    접속한 User의 정보를 조회하는 페이지
+//    Spring Security로 로그인한 User의 정보는 security를 통한 일반 로그인(UserDetails 객체)이나
+//    OAuth 를 통한 외부 로그인(OAuth2User)인데
+//    PrincipalDetails2 DTO 를 이용해 @AuthenticationPrincipal UserDetails 와 OAuth2User 둘 다 받을 수 있도록 객체를 만들었다
+//    과제: DB에 User Entity 로 넣었기 때문에 User Entity 로 반환할 수 있다. PrincipalDetails2 에는 많은 필드가 있어서 JSON 으로 반환하면 너무 많은 정보가 노출
+    @GetMapping(value = "/user")
+    public @ResponseBody PrincipalDetails2 userInfo(@AuthenticationPrincipal PrincipalDetails2 principalDetails2){
+        return principalDetails2;
     }
 
     //    Login 처리

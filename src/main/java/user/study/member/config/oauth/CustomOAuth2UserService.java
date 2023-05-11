@@ -19,6 +19,7 @@ import user.study.member.repository.UserRepository;
 import java.util.*;
 /*
 * 구글 로그인 이후 가져온 사용자의 정보를 기반으로 가입 및 정보 수정, 세션 저장 등의 기능
+* 이 클래스는 클라이언트가 oauth 로그인을 했을 때 사용자 정보 처리를 loadUser를 통해 진행해서 OAuthAttributes DTO 로 받는다
 * */
 @RequiredArgsConstructor
 @Service

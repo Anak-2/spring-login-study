@@ -3,7 +3,10 @@ package user.study.member.domain.user;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.util.Assert;
+
+import java.sql.Timestamp;
 
 @Getter
 @Slf4j
@@ -19,22 +22,28 @@ public class User{
     private String name;
     private String pwd;
 
-//    OAuth login 에 필요
+//    OAuth login을 위한 필드
     private String email;
     private String picture;
 
+    private String provider;
+    private String providerId;
+
+    @CreationTimestamp
+    private Timestamp createDate;
 //    @Builder.Default --> NoArgsConstructor 와 충돌
     @Enumerated(EnumType.STRING)
     private Role role = Role.GUEST;
 
-//    Google 가입
+//    OAuth 가입
     @Builder(builderClassName = "oauthBuilder", builderMethodName = "oauthBuilder")
-    public User(String name, String email, String picture, Role role) {
+    public User(String name, String email, Role role, String provider, String providerId) {
         log.debug("Call oauthBuilder name = {} email = {}",name,email);
         this.name = name;
         this.email = email;
-        this.picture = picture;
         this.role = role;
+        this.provider = provider;
+        this.providerId = providerId;
     }
 
 //    Form 가입
