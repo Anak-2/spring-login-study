@@ -6,7 +6,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
-import user.study.member.config.auth.CustomOAuth2UserService;
+import user.study.member.config.oauth.CustomOAuth2UserService;
 import user.study.member.domain.user.Role;
 
 // Google 로그인 용 SecurityConfig
@@ -39,7 +39,8 @@ public class SecurityConfig2 {
 //                      OAuth logout
                         .logout().logoutSuccessUrl("/")
                 .and()
-//                      OAuth login
+//                      OAuth login(/oauth2/authorization/google 요청을 처리해줌)
+//                      -> 구글 로그인 이후 후처리가 필요! 만약 구현 안하면 Forbidden 403 오류 뜸
                         .oauth2Login()
 //                      login 성공 이후 사용자 정보를 가져온 상태
                         .userInfoEndpoint().userService(customOAuth2UserService);

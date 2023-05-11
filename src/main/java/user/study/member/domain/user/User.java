@@ -30,6 +30,7 @@ public class User{
 //    Google 가입
     @Builder(builderClassName = "oauthBuilder", builderMethodName = "oauthBuilder")
     public User(String name, String email, String picture, Role role) {
+        log.debug("Call oauthBuilder name = {} email = {}",name,email);
         this.name = name;
         this.email = email;
         this.picture = picture;

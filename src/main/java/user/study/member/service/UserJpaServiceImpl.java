@@ -47,7 +47,7 @@ public class UserJpaServiceImpl implements UserService {
         return findUser.orElse(null);
     }
 
-    //  일반 JPA 를 사용한 메소드 --> JPA Repository 의 return 값 잘못 설계함 ㅠ 수정 필요
+    //  과제: 일반 JPA 를 사용한 메소드 --> JPA Repository 의 return 값 잘못 설계함 ㅠ 수정 필요
     @Override
     public List<User> login(String userName, String userPwd) {
         return null;

@@ -1,26 +1,30 @@
-package user.study.member.config.auth;
+package user.study.member.config.oauth;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import user.study.member.domain.user.User;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
-// Security 의 Session 을 이용하려면 Authentication 타입 객체여야 하고,
-// Authentication 안에 User 정보는 UserDetails 라는 인터페이스를 구현한 객체여야한다.
-// 이 프로젝트에서는
-// Authentication -> PrincipalDetailsService 클래스에 UserDetailsService 인터페이스 구현
-// UserDetails -> PrincipalDetails 클래스로 UserDetails 인터페이스 구현
+// Controller에서 Authentication 로 세션에서 가져올 때 유저가 무엇으로 로그인하는지 알 필요 없이
+// UserDetails, OAuth2User 모두 구현한 클래스 PrincipalDetails2 만들기
 @Getter
 @RequiredArgsConstructor
-public class PrincipalDetails implements UserDetails {
+public class PrincipalDetails2 implements UserDetails, OAuth2User {
 
     private final User user;
 
-//    해당 User 의 권한(Autority)를 리턴하는 메서드
+    @Override
+    public Map<String, Object> getAttributes() {
+        return null;
+    }
+
+    //    해당 User 의 권한(Autority)를 리턴하는 메서드
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         Collection<GrantedAuthority> collection = new ArrayList<>();
@@ -70,4 +74,8 @@ public class PrincipalDetails implements UserDetails {
         return true;
     }
 
+    @Override
+    public String getName() {
+        return null;
+    }
 }

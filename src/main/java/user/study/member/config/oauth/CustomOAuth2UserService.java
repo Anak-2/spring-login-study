@@ -1,4 +1,4 @@
-package user.study.member.config.auth;
+package user.study.member.config.oauth;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +28,7 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
     private final HttpSession httpSession;
 
     /*
+    - 구글로 로그인한 사용자를 후처리하는 함수
 *   @Params
 *   registrationId - 현재 로그인 서비스가 네이버 로그인인지, 구글 로그인인지 구분하기 위해 사용
 *   userNameAttributeName - OAuth2 로그인 진행 시 키가 되는 값, pk와 동일

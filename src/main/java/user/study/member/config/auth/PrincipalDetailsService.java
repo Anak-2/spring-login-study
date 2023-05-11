@@ -32,7 +32,8 @@ public class PrincipalDetailsService implements UserDetailsService {
         User user = findUser.orElse(null);
         log.info("user : {}", user);
         if(user != null){
-            return new PrincipalDetails(user);
+            PrincipalDetails principalDetails = new PrincipalDetails(user);
+            return principalDetails;
         }
         throw new UsernameNotFoundException("해당 유저를 찾을 수 없습니다");
     }
