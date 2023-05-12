@@ -22,7 +22,7 @@ import java.util.*;
 *
 * userRequest 정보 -> loadUser() 로 회원 프로필 받음
 * */
-@Service
+@Service("myOauth2UserService")
 public class MyOAuth2UserService extends DefaultOAuth2UserService {
 
 //    과제: UserRepository, UserJpaRepository 를 DI 할 수 있도록 하나로 합치기

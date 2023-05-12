@@ -3,6 +3,7 @@ package user.study.member.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -12,6 +13,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
 import user.study.member.config.auth.PrincipalDetails;
+import user.study.member.config.auth.PrincipalDetailsService;
+import user.study.member.config.oauth.MyOAuth2UserService;
 import user.study.member.config.oauth.PrincipalDetails2;
 import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.Role;
@@ -29,14 +32,17 @@ import java.text.Normalizer;
 public class SecurityLoginController {
 
     private final UserService userService;
+    private final MyOAuth2UserService myOAuth2UserService;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
     public SecurityLoginController(
             @Qualifier("userJpaServiceImpl") // Lombok 이 Qualifier 는 자동 생성 안해주므로 직접 생성자 생성
             UserService userService,
+            MyOAuth2UserService myOAuth2UserService,
             BCryptPasswordEncoder bCryptPasswordEncoder) {
         this.userService = userService;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
+        this.myOAuth2UserService = myOAuth2UserService;
     }
 
     //    Main 화면
@@ -44,14 +50,9 @@ public class SecurityLoginController {
 //    해결: @AuthenticationPrincipal 이용해서 Authentication 객체에서 최근 로그인한 UserDetails 객체 받아오기
 //    과제: PrincipalDetails 를 우리가 필요한 추가 정보 (ex. 집주소, 전화번호) 같은 것을 추가해서 User Entity로 가져오기
     @GetMapping(value = {"", "/"})
-    public String home(@AuthenticationPrincipal PrincipalDetails principalDetails, Model model) {
-        if(principalDetails != null){
-            User user = User.formBuilder()
-                    .name(principalDetails.getUsername())
-                    .pwd(principalDetails.getPassword())
-                    .role(Role.GUEST) // 과제: Role 클래스도 principalDetails 에서 받아오도록 바꾸기
-                    .build();
-            model.addAttribute("user", user);
+    public String home(@AuthenticationPrincipal PrincipalDetails2 principalDetails2, Model model) {
+        if(principalDetails2 != null){
+            model.addAttribute("user", principalDetails2.toEntity());
         }
         return "home";
     }
@@ -61,9 +62,10 @@ public class SecurityLoginController {
 //    OAuth 를 통한 외부 로그인(OAuth2User)인데
 //    PrincipalDetails2 DTO 를 이용해 @AuthenticationPrincipal UserDetails 와 OAuth2User 둘 다 받을 수 있도록 객체를 만들었다
 //    과제: DB에 User Entity 로 넣었기 때문에 User Entity 로 반환할 수 있다. PrincipalDetails2 에는 많은 필드가 있어서 JSON 으로 반환하면 너무 많은 정보가 노출
+//    과제2: 한 Controller 에 2개 Service (MyOAuth2UserService, UserJpaServiceImpl)
     @GetMapping(value = "/user")
-    public @ResponseBody PrincipalDetails2 userInfo(@AuthenticationPrincipal PrincipalDetails2 principalDetails2){
-        return principalDetails2;
+    public @ResponseBody User userInfo(@AuthenticationPrincipal PrincipalDetails2 principalDetails2){
+        return principalDetails2.toEntity();
     }
 
     //    Login 처리
@@ -103,4 +105,6 @@ public class SecurityLoginController {
     public String getAdminPage() {
         return "admin";
     }
+
+//      과제: logout 만들기 (spring security 에서 제공하는거 써도 좋고)
 }

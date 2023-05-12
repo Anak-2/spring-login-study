@@ -51,10 +51,12 @@ public class SecurityConfig1{
                 *   해결 : --> passwordParameter 가 디폴트로 password 인데 이것을 내 웹에서 <input type="password" name=pwd >로 받고있었기 때문에 발생한 문제!!!!
                  */
                 .loginProcessingUrl("/security-login/login")
-                .defaultSuccessUrl("/security-login/")
+                .defaultSuccessUrl("/security-login")
                 .failureHandler(customFailureHandler)
                 .and()
                 .oauth2Login()
+                .defaultSuccessUrl("/security-login")
+                .failureHandler(customFailureHandler)
                 .userInfoEndpoint()
                 .userService(myOAuth2UserService);
         return http.build();
