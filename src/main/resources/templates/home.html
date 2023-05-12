@@ -23,6 +23,9 @@
             <button th:onclick="|location.href='@{/{loginType}/admin (loginType=${loginType})}'|">관리자 페이지</button>
         </div>
         <div>
+            <button th:onclick="|location.href='@{/{loginType}/user (loginType=${loginType})}'|">사용자 정보</button>
+        </div>
+        <div>
             <button th:onclick="|location.href='@{/{loginType}/logout (loginType=${loginType})}'|">로그아웃</button>
         </div>
     </div>
