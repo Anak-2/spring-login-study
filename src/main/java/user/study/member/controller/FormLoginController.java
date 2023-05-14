@@ -8,10 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.*;
 import user.study.member.domain.dto.FormUser;
 import user.study.member.domain.user.User;
 import user.study.member.service.UserService;
@@ -72,5 +69,11 @@ public class FormLoginController {
         }
         userService.join(formUser.toEntity());
         return "redirect:/form-login";
+    }
+
+    @PostMapping(value="/logout")
+    @ResponseBody
+    public String logout(){
+        return "complete logout!";
     }
 }

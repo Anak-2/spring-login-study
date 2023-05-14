@@ -9,6 +9,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import user.study.member.config.oauth.PrincipalDetails2;
 import user.study.member.domain.user.User;
 import user.study.member.repository.UserJpaRepository;
 import user.study.member.service.UserService;
@@ -32,8 +33,8 @@ public class PrincipalDetailsService implements UserDetailsService {
         User user = findUser.orElse(null);
         log.info("user : {}", user);
         if(user != null){
-            PrincipalDetails principalDetails = new PrincipalDetails(user);
-            return principalDetails;
+            PrincipalDetails2 principalDetails2 = new PrincipalDetails2(user);
+            return principalDetails2;
         }
         throw new UsernameNotFoundException("해당 유저를 찾을 수 없습니다");
     }

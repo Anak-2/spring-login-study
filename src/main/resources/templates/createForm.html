@@ -11,6 +11,7 @@
     /*]]>*/
 </script>
 <body>
+    <h2>create page</h2>
 <!--model 에 객체를 바인딩 해줘야 th:object 로 받아올 수 있다-->
     <form th:action="@{/{loginType}/create (loginType=${loginType})}" method="post" th:object="${formUser}">
         <label th:for="name">아이디</label>

@@ -65,6 +65,7 @@ public class SecurityLoginController {
 //    과제2: 한 Controller 에 2개 Service (MyOAuth2UserService, UserJpaServiceImpl)
     @GetMapping(value = "/user")
     public @ResponseBody User userInfo(@AuthenticationPrincipal PrincipalDetails2 principalDetails2){
+//        ToDO: principalDetails2 로 받아서 id가 null임 수정 필요
         return principalDetails2.toEntity();
     }
 

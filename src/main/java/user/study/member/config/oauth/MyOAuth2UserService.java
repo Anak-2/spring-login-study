@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import user.study.member.domain.dto.OAuth2UserInfo;
 import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
 import user.study.member.repository.UserJpaRepository;
@@ -34,45 +35,39 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
         // 실질적으로 필요한 것
         System.out.println("oAuth2User.getAttributes() : "+oAuth2User.getAttributes());
+        System.out.println("your platform is : "+userRequest.getClientRegistration().getRegistrationId());
 
         return processOAuth2User(userRequest,oAuth2User);
     }
 
     private OAuth2User processOAuth2User(OAuth2UserRequest userRequest, OAuth2User oAuth2User){
-//        과제: DTO (OAuthAttributes) 에 받아서 저장할 때 Entity로 넘기도록 리팩토링
-        User user; // 정보를 담을 Entity
+//        과제: DTO 에 받아서 저장할 때 Entity로 넘기도록 리팩토링
+//        해결: OAuth2UserInfo 클래스 생성
+//        User user; // 정보를 담을 Entity
+        OAuth2UserInfo oAuth2UserInfo;
 
         Map<String, Object> attributes = oAuth2User.getAttributes();
 //        OAuth 를 제공하는 서버 (여기선 google)
-        String provider = userRequest.getClientRegistration().getClientId();
-//        사용자의 Id (Unique 보장)
-        String providerId = (String) attributes.get("sub");
-//        사용자의 이름
-        String name = (String) attributes.get("name");
-//        사용자의 이메일
-        String email = (String) attributes.get("email");
-//        역할은 USER 로 지정
-        Role role = Role.USER;
+//        String provider = userRequest.getClientRegistration().getClientId();
+        String provider = userRequest.getClientRegistration().getRegistrationId();
 
-        user = User.oauthBuilder()
-                .name(provider+"_"+providerId) // -> google_PK
-                .email(email)
-                .role(role)
-                .provider(provider)
-                .providerId(providerId)
-                .build();
+        if(provider.equals("naver")){
+            oAuth2UserInfo = new OAuth2UserInfo((Map<String, Object>)attributes.get("response"), provider);
+        }else{
+            oAuth2UserInfo = new OAuth2UserInfo(attributes, provider);
+        }
 
-        Optional<User> findUser = userJpaRepository.findByProviderAndProviderId(provider, providerId);
+        Optional<User> findUser = userJpaRepository.findByProviderAndProviderId(provider, oAuth2UserInfo.getProviderId());
 //        구글로 가입한 회원이 없으면 자동 가입해주기
         if(!findUser.isPresent()){
-            userJpaRepository.save(user);
+            userJpaRepository.save(oAuth2UserInfo.toEntity());
         }else{
 //            가입한 회원이 있으면 업데이트만
             User updateUser = findUser.get();
-            updateUser.setEmail(email);
+            updateUser.setEmail(oAuth2UserInfo.getEmail());
             userJpaRepository.save(updateUser);
         }
 
-        return new PrincipalDetails2(user,attributes);
+        return new PrincipalDetails2(oAuth2UserInfo.toEntity(),attributes);
     }
 }

@@ -56,14 +56,12 @@ public class PrincipalDetails2 implements UserDetails, OAuth2User {
     @Override
     public String getPassword() {
         String pwd = user.getPwd();
-        System.out.println("pwd : "+pwd);
         return pwd;
     }
 
     @Override
     public String getUsername() {
         String username = user.getName();
-        System.out.println("user : "+username);
         return username;
     }
 
