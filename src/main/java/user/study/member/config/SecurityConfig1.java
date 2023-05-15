@@ -14,8 +14,8 @@ import user.study.member.config.oauth.MyOAuth2UserService;
 import user.study.member.domain.user.Role;
 
 // 일반 Spring Security 용 Config
-@Configuration
-@EnableWebSecurity
+//@Configuration
+//@EnableWebSecurity
 @Slf4j
 @RequiredArgsConstructor
 public class SecurityConfig1{
@@ -26,8 +26,10 @@ public class SecurityConfig1{
     public BCryptPasswordEncoder passwordEncoder(){
         return new BCryptPasswordEncoder();
     }
-    @Autowired
-    MyOAuth2UserService myOAuth2UserService;
+//    Configuration 을 생략할 때 Autowired 는 스프링 빈 컨테이너에 접근할 수 있어야 된다는 오류 발생
+//    "Autowired members must be defined in valid Spring bean"
+//    @Autowired
+    private final MyOAuth2UserService myOAuth2UserService;
 
     private final AuthenticationFailureHandler customFailureHandler;
 

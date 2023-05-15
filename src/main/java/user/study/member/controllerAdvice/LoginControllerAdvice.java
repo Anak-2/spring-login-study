@@ -31,6 +31,8 @@ public class LoginControllerAdvice {
         }
         else if(requestURI.contains("security-login")){
             model.addAttribute("loginType","security-login");
+        }else if(requestURI.contains("jwt-login")){
+            model.addAttribute("loginType","jwt-login");
         }
     }
 
