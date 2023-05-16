@@ -26,7 +26,7 @@ import java.util.*;
 @Service("myOauth2UserService")
 public class MyOAuth2UserService extends DefaultOAuth2UserService {
 
-//    과제: UserRepository, UserJpaRepository 를 DI 할 수 있도록 하나로 합치기
+//    ToDo: UserRepository, UserJpaRepository 를 하나의 인터페이스로 DI 받기
     @Autowired
     private UserJpaRepository userJpaRepository;
 

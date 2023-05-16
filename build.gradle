@@ -31,9 +31,13 @@ dependencies {
 //	Spring Security
 	implementation "org.springframework.boot:spring-boot-starter-security"
 	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
 //	JWT
 	// https://mvnrepository.com/artifact/com.auth0/java-jwt
-	implementation "io.jsonwebtoken:jjwt:0.9.1"
+//	implementation "io.jsonwebtoken:jjwt:0.9.1" --> JwtBuilder 를 이용해서 토큰을 생성해야하는 라이브러리
+//	com.auto0 의 java-jwt 사용하면 JWT.create() 로 간단하게 Token 생성 가능
+//	참고: https://github.com/auth0/java-jwt
+	implementation 'com.auth0:java-jwt:4.4.0'
 
 
 //	MySQL

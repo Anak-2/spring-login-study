@@ -26,6 +26,7 @@ public class PrincipalDetailsService implements UserDetailsService {
 
     private final UserJpaRepository userJpaRepository;
 
+//    Authentication Manager 의 authenticate 실행될 때 호출
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         log.info("loadUserByUsername 호출");

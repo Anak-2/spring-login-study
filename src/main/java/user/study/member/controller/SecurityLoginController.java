@@ -88,7 +88,7 @@ public class SecurityLoginController {
         return "createForm";
     }
 
-    //    과제: DB 에 name 중복 확인을 2번 하는 낭비 해결 필요
+    //    ToDo: DB 에 name 중복 확인을 2번 하는 낭비 해결 필요
     @PostMapping(value = "/create")
     public String createUser(@Valid @ModelAttribute FormUser formUser, BindingResult bindingResult) {
         if (userService.checkNameDuplicate(formUser.getName())) {

@@ -18,8 +18,11 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import user.study.member.domain.user.Role;
 import user.study.member.filter.JwtAuthenticationFilter;
+import user.study.member.filter.JwtAuthorizationFilter;
 import user.study.member.filter.MyFilter1;
+import user.study.member.repository.UserJpaRepository;
 
+// ToDo: SecufityFilterChain Configuration 하나로 합치기
 @Configuration
 @EnableWebSecurity
 @Slf4j
@@ -27,12 +30,12 @@ import user.study.member.filter.MyFilter1;
 public class JwtSecurityConfig {
 
     private final CorsConfig corsConfig;
+    private final UserJpaRepository userJpaRepository;
 
 //    @Bean
 //    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception{
 //        return authenticationConfiguration.getAuthenticationManager();
 //    }
-
 
     @Bean
     public BCryptPasswordEncoder passwordEncoder(){
@@ -78,8 +81,8 @@ public class JwtSecurityConfig {
 //            모든 요청은 이 filter 를 거쳐서 오도록 설정, cors에 대해 허락하는 필터
 //            Controller에 @CrossOrigin 을 붙여주는 방법도 있지만 이 방식은 필터 추가와 다르게 인증이 필요 없는 url만 처리해줌
                     .addFilter(corsConfig.corsFilter())
-                    .addFilter(new JwtAuthenticationFilter(authenticationManager)); // formLogin disable 한 것 활성화 시키는 필터
-//                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userRepository));
+                    .addFilter(new JwtAuthenticationFilter(authenticationManager)) // formLogin disable 한 것 활성화 시키는 필터
+                    .addFilter(new JwtAuthorizationFilter(authenticationManager, userJpaRepository));
         }
     }
 }

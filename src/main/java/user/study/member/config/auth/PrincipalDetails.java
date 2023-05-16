@@ -30,6 +30,7 @@ public class PrincipalDetails implements UserDetails {
                 return user.getRoleKey();
             }
         });
+//        collection.add(()->{return user.getRoleKey();}) 로 줄이기 가능
         return collection;
     }
 
