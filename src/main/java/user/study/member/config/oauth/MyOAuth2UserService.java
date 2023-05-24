@@ -1,18 +1,16 @@
 package user.study.member.config.oauth;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
+import user.study.member.config.auth.PrincipalDetails2;
 import user.study.member.domain.dto.OAuth2UserInfo;
-import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
 import user.study.member.repository.UserJpaRepository;
-import user.study.member.repository.UserRepository;
+
 import java.util.*;
 
 /*
@@ -26,7 +24,6 @@ import java.util.*;
 @Service("myOauth2UserService")
 public class MyOAuth2UserService extends DefaultOAuth2UserService {
 
-//    ToDo: UserRepository, UserJpaRepository 를 하나의 인터페이스로 DI 받기
     @Autowired
     private UserJpaRepository userJpaRepository;
 

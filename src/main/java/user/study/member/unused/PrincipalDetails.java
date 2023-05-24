@@ -1,4 +1,4 @@
-package user.study.member.config.auth;
+package user.study.member.unused;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

@@ -1,10 +1,9 @@
 package user.study.member.controller;
 
 import jakarta.validation.Valid;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -12,17 +11,11 @@ import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
-import user.study.member.config.auth.PrincipalDetails;
-import user.study.member.config.auth.PrincipalDetailsService;
 import user.study.member.config.oauth.MyOAuth2UserService;
-import user.study.member.config.oauth.PrincipalDetails2;
+import user.study.member.config.auth.PrincipalDetails2;
 import user.study.member.domain.dto.FormUser;
-import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
 import user.study.member.service.UserService;
-import user.study.member.service.UserServiceImpl;
-
-import java.text.Normalizer;
 
 // Spring Security 를 이용한 로그인
 // 과제 : security login 을 이용해서 home.html 띄울 때 시큐리티의 session 이용해서 user 정보 꺼내오는 방법 생각하기
@@ -50,9 +43,13 @@ public class SecurityLoginController {
 //    해결: @AuthenticationPrincipal 이용해서 Authentication 객체에서 최근 로그인한 UserDetails 객체 받아오기
 //    과제: PrincipalDetails 를 우리가 필요한 추가 정보 (ex. 집주소, 전화번호) 같은 것을 추가해서 User Entity로 가져오기
     @GetMapping(value = {"", "/"})
-    public String home(@AuthenticationPrincipal PrincipalDetails2 principalDetails2, Model model) {
-        if(principalDetails2 != null){
-            model.addAttribute("user", principalDetails2.toEntity());
+//    public String home(@AuthenticationPrincipal PrincipalDetails2 principalDetails2, Model model) {
+    public String home(Authentication authentication, Model model) {
+        if(authentication != null){
+            PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
+            if(principalDetails2 != null){
+                model.addAttribute("user", principalDetails2.toEntity());
+            }
         }
         return "home";
     }
@@ -66,7 +63,10 @@ public class SecurityLoginController {
     @GetMapping(value = "/user")
     public @ResponseBody User userInfo(@AuthenticationPrincipal PrincipalDetails2 principalDetails2){
 //        ToDo: principalDetails2 로 받아서 id가 null임 수정 필요
-        return principalDetails2.toEntity();
+        if(principalDetails2 != null){
+            return principalDetails2.toEntity();
+        }
+        return null;
     }
 
     //    Login 처리

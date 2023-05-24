@@ -1,4 +1,4 @@
-package user.study.member.filter;
+package user.study.member.unused;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

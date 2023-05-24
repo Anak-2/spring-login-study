@@ -1,4 +1,4 @@
-package user.study.member.filter;
+package user.study.member.filter.jwtV1;
 
 import com.auth0.jwt.algorithms.Algorithm;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -9,14 +9,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.annotation.Bean;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import user.study.member.config.oauth.PrincipalDetails2;
+import user.study.member.config.auth.PrincipalDetails2;
 import user.study.member.domain.user.User;
 import com.auth0.jwt.JWT;
 
@@ -36,7 +34,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
     private final AuthenticationManager authenticationManager;
 
-//    사용자의 정보를 인증하는 것 시도
+//    사용자의 정보를 인증(로그인)하는 것 시도
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
         throws AuthenticationException {
@@ -61,7 +59,7 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 
 //            로그인이 잘 되면 다음 코드 정상 실행됨
             log.debug("로그인 정보 principalDetails.getUser().getName() : {}",principalDetails.getUser().getName());
-            return authentication;
+            return authentication; // return 할 때 authentication 객체가 session 영역에 저장됨
 //            ---------- successfulAuthentication 또는 unsuccessfulAuthentication 함수 실행
         } catch (IOException e) {
             log.debug("cannot find user");
@@ -81,15 +79,15 @@ public class JwtAuthenticationFilter extends UsernamePasswordAuthenticationFilte
 //      사용자에게 넘겨줄 JWT 토큰 생성
         String jwtToken = JWT.create()
 //                토큰 이름
-                .withSubject("MyToken")
+                .withSubject(principalDetails2.getUsername())
 //                토큰 유효기간 (60000 -> 1분)
-                .withExpiresAt(new Date(System.currentTimeMillis()+(60000)*10))
+                .withExpiresAt(new Date(System.currentTimeMillis()+ JwtProperties.EXPIRATION_TIME))
 //                비공개 claim (넣고 싶은 key, value 값)
                 .withClaim("id", principalDetails2.getUser().getId())
                 .withClaim("name", principalDetails2.getUser().getName())
-                .sign(Algorithm.HMAC512("cos"));
+                .sign(Algorithm.HMAC512(JwtProperties.SECRET)); // Token 암호화할 Key
 //        응답하는 response 의 header 에 Authorization 정보 + 토큰 추가
-        response.addHeader("Authorization","Bearer "+jwtToken);
+        response.addHeader(JwtProperties.HEADER_STRING,JwtProperties.TOKEN_PREFIX+jwtToken);
 
 //        아래 코드가 있으면 내가 만든 successfulAuthentication 이 덮어씌어져서 정보 사라짐
 //        super.successfulAuthentication(request, response, chain, authResult);

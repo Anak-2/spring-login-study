@@ -12,6 +12,8 @@
     </div>
     <div th:if="${user == null}">
         <a th:href="|@{/{loginType}/login(loginType=${loginType})}|">로그인</a><br>
+<!--        /oauth2/authorization/{provider} 는 프론트가 백엔드로 소셜로그인 요청을 보내는 URI
+            http.oauth2Login().authorizationEndpoint().baseUri("바꾸고 싶은 uri") 로 변경 가능-->
         <a href="/oauth2/authorization/google">구글 로그인</a><br>
         <a href="/oauth2/authorization/facebook">페이스북 로그인</a><br>
         <a href="/oauth2/authorization/naver">네이버 로그인</a><br>
@@ -34,4 +36,7 @@
         </div>
     </div>
 </body>
+<script th:inline="javascript">
+    console.log([[${user}]]);
+</script>
 </html>

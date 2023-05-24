@@ -1,16 +1,20 @@
 package user.study.member.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import user.study.member.config.oauth.PrincipalDetails2;
+import user.study.member.config.auth.PrincipalDetails2;
+import user.study.member.domain.dto.request.UserRequestDto;
+import user.study.member.domain.dto.response.UserResponseDto;
 import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
 import user.study.member.repository.UserJpaRepository;
-import user.study.member.repository.UserRepository;
+import user.study.member.service.UserJwtService;
+import user.study.member.service.UserService;
 
 @RestController
 @RequestMapping("/jwt-login")
@@ -19,11 +23,23 @@ public class JwtLoginController {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
     private final UserJpaRepository userRepository;
+    private final UserJwtService userJwtService;
 
     // 모든 사람이 접근 가능
     @GetMapping("home")
     public String home() {
         return "<h1>home</h1>";
+    }
+
+//    로그인, JWT 생성
+    @PostMapping("login")
+    public ResponseEntity<?> login(@RequestBody UserRequestDto.LoginDTO loginDTO){
+        UserResponseDto.TokenInfo tokenInfo = userJwtService.login(loginDTO.getName(), loginDTO.getPwd());
+        if(tokenInfo != null){
+            return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
+        }else{
+            return new ResponseEntity<>("로그인 처리 오류",HttpStatus.BAD_REQUEST);
+        }
     }
 
 //    회원 가입
@@ -46,7 +62,7 @@ public class JwtLoginController {
     }
 
     @GetMapping("admin")
-    public String adminPage(){
+    public String adminPage() {
         return "Admin Page";
     }
 }

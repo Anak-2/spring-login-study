@@ -1,4 +1,4 @@
-package user.study.member.domain.dto;
+package user.study.member.unused;
 
 import lombok.Builder;
 import lombok.Getter;

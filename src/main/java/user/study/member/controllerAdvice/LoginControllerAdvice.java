@@ -16,7 +16,7 @@ import user.study.member.global.exception.NotAuthorizedException;
 @Slf4j
 public class LoginControllerAdvice {
 
-    @ModelAttribute // 모든 컨트롤러의 Model에 적용, login.html 재사용하기 위핸 코드
+    @ModelAttribute // 모든 컨트롤러의 Model에 적용, login.html 재사용하기 위한 코드
     public void handelRequest(HttpServletRequest request, Model model){
         String requestURI = request.getRequestURI();
 

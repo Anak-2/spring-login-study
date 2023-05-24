@@ -1,10 +1,4 @@
-package user.study.member.config;
-
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Configuration;
-import user.study.member.filter.MyFilter1;
+package user.study.member.unused;
 
 //@Configuration
 //@Slf4j

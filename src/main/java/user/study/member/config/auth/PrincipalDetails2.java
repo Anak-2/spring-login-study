@@ -1,12 +1,9 @@
-package user.study.member.config.oauth;
+package user.study.member.config.auth;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-import user.study.member.config.auth.PrincipalDetails;
 import user.study.member.domain.user.User;
 
 import java.util.ArrayList;

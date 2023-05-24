@@ -1,4 +1,4 @@
-package user.study.member.config.oauth;
+package user.study.member.unused;
 
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import user.study.member.domain.dto.OAuthAttributes;
+import user.study.member.unused.OAuthAttributes;
 import user.study.member.domain.dto.SessionUser;
 import user.study.member.domain.user.User;
 import user.study.member.repository.UserRepository;
