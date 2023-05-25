@@ -39,10 +39,10 @@ public class JwtTokenProvider {
     public static final String BEARER_TYPE = "Bearer ";
     public static final String TYPE_ACCESS = "access";
     public static final String TYPE_REFRESH = "refresh";
-    public static final long ACCESS_TOKEN_EXPIRE_TIME = 30*60*1000L; // 30m
+    public static final long ACCESS_TOKEN_EXPIRE_TIME = 60*1000L; // 1m
     public static final long REFRESH_TOKEN_EXPIRE_TIME = 7*24*60*60*1000L; // 7d
 
-//    properties 설정 파일에 설정한 암호키, static 으로 설정하면 Spring 이 처리 못해줌!
+//    properties 설정 파일에 설정한 암호키, static 으로 설정하면 Spring 이 처리 못해주니까 생성자에서 @Value 처리
     private static String secretKey;
     private static UserJpaRepository userJpaRepository;
 
