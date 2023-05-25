@@ -28,8 +28,10 @@ public class UserJwtService{
 
     public UserResponseDto.TokenInfo login(String userName, String userPwd) {
         try{
+//            아직 인증받기 전 Authentication 객체
             UsernamePasswordAuthenticationToken usernamePasswordAuthenticationToken
                     = new UsernamePasswordAuthenticationToken(userName,userPwd);
+//            Spring Security 기능으로 로그인 처리하고 인증받은 객체로 JWT 발급 
             Authentication authentication = authenticationManager.authenticate(usernamePasswordAuthenticationToken);
             return JwtTokenProvider.generateToken(authentication);
         }catch(Exception e){

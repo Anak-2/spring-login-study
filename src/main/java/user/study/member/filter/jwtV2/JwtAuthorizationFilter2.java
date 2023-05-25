@@ -11,9 +11,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.spring6.context.SpringContextUtils;
 import user.study.member.config.auth.PrincipalDetails2;
 
 import java.io.IOException;
@@ -26,7 +28,7 @@ public class JwtAuthorizationFilter2 extends BasicAuthenticationFilter {
     private final String accessHeader = "Authorization";
 //    @Value("{jwt.refresh.header}")
     private final String refreshHeader = "Authorization_refresh";
-    Authentication authentication;
+    AuthenticationManager authenticationManager;
 
     public JwtAuthorizationFilter2(AuthenticationManager authenticationManager) {
         super(authenticationManager);
@@ -40,11 +42,17 @@ public class JwtAuthorizationFilter2 extends BasicAuthenticationFilter {
             filterChain.doFilter(request,response);
             return;
         }
-        authentication = checkAccessToken(jwt);
+        Authentication authentication = checkAccessToken(jwt);
         if(authentication == null){
             String rJwt = request.getHeader(refreshHeader);
             String accessToken = JwtTokenProvider.refreshAccessToken(rJwt, jwt);
+            authentication = JwtTokenProvider.getAuthentication(accessToken);
         }
+        if(authentication != null){
+            System.out.println(authentication.getName());
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+        }
+        filterChain.doFilter(request, response);
     }
 
     private Authentication checkAccessToken(String jwt){

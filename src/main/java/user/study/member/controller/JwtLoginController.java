@@ -49,7 +49,7 @@ public class JwtLoginController {
         user.setPwd(bCryptPasswordEncoder.encode(user.getPwd()));
         user.setRole(Role.USER);
         userRepository.save(user);
-        return "회원가입완료";
+        return "회원가입 완료";
     }
 
     // Tip : JWT를 사용하면 UserDetailsService를 호출하지 않기 때문에 @AuthenticationPrincipal 사용 불가능.
@@ -58,6 +58,7 @@ public class JwtLoginController {
     public User userPage(Authentication authentication){
         PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
         User user = principalDetails2.getUser();
+        System.out.println(user.toString());
         return user;
     }
 

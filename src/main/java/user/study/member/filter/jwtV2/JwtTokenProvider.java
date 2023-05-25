@@ -44,9 +44,12 @@ public class JwtTokenProvider {
 
 //    properties 설정 파일에 설정한 암호키, static 으로 설정하면 Spring 이 처리 못해줌!
     private static String secretKey;
+    private static UserJpaRepository userJpaRepository;
 
-    public JwtTokenProvider(@Value("{jwt.secret}") String secretKey){
+    @Autowired
+    public JwtTokenProvider(@Value("{jwt.secret}") String secretKey, UserJpaRepository userJpaRepository){
         JwtTokenProvider.secretKey = secretKey;
+        JwtTokenProvider.userJpaRepository = userJpaRepository;
     }
 
 //    Authentication(사용자 정보 인증된 객체) 를 가지고 AccessToken, RefreshToken 생성
@@ -99,26 +102,25 @@ public class JwtTokenProvider {
         return null;
     }
 
-//    JWT 토큰을 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+//    JWT 토큰을 검증한 뒤 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
+//    @Param : 검증이 안된 accessToken 정보
+//    @Return : 인증이 완료된 Authentication 객체 반환
     public static Authentication getAuthentication(String accessToken){
+        log.debug("Call JwtTokenProvider.getAuthentication()");
         try{
             DecodedJWT jwt = JWT.require(HMAC512(secretKey)).build()
                     .verify(accessToken);
             String username = jwt.getClaim("username").asString();
-//            if (username != null && !username.equals("")) {
-//                User user = userJpaRepository.findByName(username).orElse(null);
-//                if(user != null){
-//                    PrincipalDetails2 principalDetails2 = new PrincipalDetails2(user);
-//                    return new UsernamePasswordAuthenticationToken(principalDetails2, null, principalDetails2.getAuthorities());
-//                }
-//            }
+            if (username != null && !username.equals("")) {
+                User user = userJpaRepository.findByName(username).orElse(null);
+                if(user != null){
+                    PrincipalDetails2 principalDetails2 = new PrincipalDetails2(user);
+                    return new UsernamePasswordAuthenticationToken(principalDetails2, null, principalDetails2.getAuthorities());
+                }
+            }
 //            ToDo: userJpaRepository 를 Autowired 받아서 사용하려 했는데
 //                static 메소드엔 static 변수만 사용할 수 있고, Autowired 변수는 static이 되면 안되기 때문에
 //                  사용하지 못해서 막힘. 다른 방법 고안해보기
-            User user = new User();
-            user.setName(username);
-            PrincipalDetails2 principalDetails2 = new PrincipalDetails2(user);
-            return new UsernamePasswordAuthenticationToken(principalDetails2, null, principalDetails2.getAuthorities());
         }
 //        verify 과정 중 발생하는 오류 잡아주기
         catch(TokenExpiredException e){
