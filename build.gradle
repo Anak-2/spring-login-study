@@ -39,7 +39,7 @@ dependencies {
 //	참고: https://github.com/auth0/java-jwt
 	implementation 'com.auth0:java-jwt:4.4.0'
 
-
+	implementation 'org.springframework.boot:spring-boot-devtools'
 //	MySQL
 	implementation 'mysql:mysql-connector-java:8.0.32'
 }

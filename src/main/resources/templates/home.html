@@ -1,40 +1,124 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" charset="UTF-8">
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Login Project</title>
-</head>
+<head th:replace="fragments/header :: header"/>
+<script>
+    var googleBtn = document.getElementsByClassName("google-btn")
+    var facebookBtn = document.getElementsByClassName("facebook-btn")
+
+    function googleBtnLink() {
+    }
+</script>
+<style>
+    .google-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 40px;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .google-icon {
+        display: inline-block;
+        width: 18px;
+        height: 18px;
+        margin-right: 10px;
+        background-image: url('https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    .google-btn-text {
+        color: #757575;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .google-btn-text:hover {
+        -webkit-animation-name: none;
+    }
+
+    .facebook-btn {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        width: 200px;
+        height: 40px;
+        background-color: #0398fc;
+        border-radius: 2px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        cursor: pointer;
+        margin-bottom: 10px;
+    }
+
+    .facebook-icon {
+        display: inline;
+        width: 90px;
+        height: 50px;
+        background-image: url('/img/Meta_Platforms-Logo.wine.svg');
+        background-repeat: no-repeat;
+        background-size: contain;
+    }
+
+    .facebook-btn-text {
+        margin-left: 25px;
+        color: #fff;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .facebook-btn-text:hover {
+        -webkit-animation-name: none;
+    }
+</style>
 <body>
-    <div>
-        <h2>home page</h2>
-        <h2>[[${loginType}]]</h2>
-    </div>
-    <div th:if="${user == null}">
-        <a th:href="|@{/{loginType}/login(loginType=${loginType})}|">로그인</a><br>
-<!--        /oauth2/authorization/{provider} 는 프론트가 백엔드로 소셜로그인 요청을 보내는 URI
-            http.oauth2Login().authorizationEndpoint().baseUri("바꾸고 싶은 uri") 로 변경 가능-->
-        <a href="/oauth2/authorization/google">구글 로그인</a><br>
-        <a href="/oauth2/authorization/facebook">페이스북 로그인</a><br>
-        <a href="/oauth2/authorization/naver">네이버 로그인</a><br>
-        <a href="/oauth2/authorization/kakao">카카오 로그인</a><br>
-        <a th:href="|@{/{loginType}/create(loginType=${loginType})}|">회원가입</a>
-    </div>
-    <div th:unless="${user == null}">
-        <p>안녕하세요</p>
-<!--        <h3 th:each="user:${users}">[[${user.name}]]님 환영합니다!</h3>-->
-        <h3>[[${user.name}]]님 환영합니다!</h3>
-        <div>
-            <button th:onclick="|location.href='@{/{loginType}/admin (loginType=${loginType})}'|">관리자 페이지</button>
+<div class="container d-flex flex-column align-items-center" style="float: none; margin:100px auto;">
+        <div class="d-flex flex-column justify-content-center">
+            <h2>home page</h2>
+            <h2>[[${loginType}]]</h2>
         </div>
-        <div>
-            <button th:onclick="|location.href='@{/{loginType}/user (loginType=${loginType})}'|">사용자 정보</button>
+        <div th:if="${user == null}" class="d-flex flex-column justify-content-center">
+            <a th:href="|@{/{loginType}/login(loginType=${loginType})}|">일반 로그인</a><br>
+            <!--        /oauth2/authorization/{provider} 는 프론트가 백엔드로 소셜로그인 요청을 보내는 URI
+                        http.oauth2Login().authorizationEndpoint().baseUri("바꾸고 싶은 uri") 로 변경 가능-->
+            <div class="google-btn">
+                <div class="google-icon"></div>
+                <a href="/oauth2/authorization/google" class="google-btn-text">Sign in with Google</a><br>
+            </div>
+            <div class="facebook-btn">
+                <a href="/oauth2/authorization/facebook" class="facebook-btn-text">Sign in with</a><br>
+                <div class="facebook-icon"></div>
+            </div>
+            <a href="/oauth2/authorization/naver">네이버 로그인</a><br>
+            <a href="/oauth2/authorization/kakao">카카오 로그인</a><br>
+            <a th:href="|@{/{loginType}/create(loginType=${loginType})}|">회원가입</a>
         </div>
-        <div>
-            <button th:if="${loginType == 'security-login'}" th:onclick="|location.href='@{/logout (loginType=${loginType})}'|">로그아웃</button>
-            <button th:unless="${loginType == 'security-login'}" th:onclick="|location.href='@{/{loginType}/logout (loginType=${loginType})}'|">로그아웃</button>
+        <div th:unless="${user == null}">
+            <p>안녕하세요</p>
+            <!--        <h3 th:each="user:${users}">[[${user.name}]]님 환영합니다!</h3>-->
+            <h3>[[${user.name}]]님 환영합니다!</h3>
+            <div>
+                <button th:onclick="|location.href='@{/{loginType}/admin (loginType=${loginType})}'|">관리자 페이지</button>
+            </div>
+            <div>
+                <button th:onclick="|location.href='@{/{loginType}/user (loginType=${loginType})}'|">사용자 정보</button>
+            </div>
+            <div>
+                <button th:if="${loginType == 'security-login'}"
+                        th:onclick="|location.href='@{/logout (loginType=${loginType})}'|">로그아웃
+                </button>
+                <button th:unless="${loginType == 'security-login'}"
+                        th:onclick="|location.href='@{/{loginType}/logout (loginType=${loginType})}'|">로그아웃
+                </button>
+            </div>
         </div>
-    </div>
+</div>
 </body>
 <script th:inline="javascript">
     console.log([[${user}]]);
