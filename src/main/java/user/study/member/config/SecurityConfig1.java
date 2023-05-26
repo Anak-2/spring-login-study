@@ -1,4 +1,4 @@
-package user.study.member.unused;
+package user.study.member.config;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

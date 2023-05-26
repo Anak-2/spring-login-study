@@ -1,5 +1,6 @@
 package user.study.member.config.oauth;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -22,10 +23,10 @@ import java.util.*;
 * userRequest 정보 -> loadUser() 로 회원 프로필 받음
 * */
 @Service("myOauth2UserService")
+@RequiredArgsConstructor
 public class MyOAuth2UserService extends DefaultOAuth2UserService {
 
-    @Autowired
-    private UserJpaRepository userJpaRepository;
+    private final UserJpaRepository userJpaRepository;
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
@@ -55,7 +56,7 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService {
         }
 
         Optional<User> findUser = userJpaRepository.findByProviderAndProviderId(provider, oAuth2UserInfo.getProviderId());
-//        구글로 가입한 회원이 없으면 자동 가입해주기
+//        소셜 로그인으로 가입한 회원이 없으면 자동 가입해주기
         if(!findUser.isPresent()){
             userJpaRepository.save(oAuth2UserInfo.toEntity());
         }else{

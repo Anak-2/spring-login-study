@@ -47,7 +47,7 @@ public class JwtTokenProvider {
     private static UserJpaRepository userJpaRepository;
 
     @Autowired
-    public JwtTokenProvider(@Value("{jwt.secret}") String secretKey, UserJpaRepository userJpaRepository){
+    public JwtTokenProvider(@Value("${jwt.secret}") String secretKey, UserJpaRepository userJpaRepository){
         JwtTokenProvider.secretKey = secretKey;
         JwtTokenProvider.userJpaRepository = userJpaRepository;
     }
