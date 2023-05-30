@@ -40,6 +40,7 @@ public class JwtAuthorizationFilter2 extends BasicAuthenticationFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws IOException, ServletException{
         String jwt = request.getHeader(accessHeader);
         System.out.println("Call JwtAuthorizationFilter2");
+        System.out.println("jwt: "+jwt);
         if(jwt == null){
             filterChain.doFilter(request,response);
             return;

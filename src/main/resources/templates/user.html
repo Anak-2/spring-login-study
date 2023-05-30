@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head th:replace="fragments/header :: header"/>
+<body>
+<h2>User Info</h2>
+<div th:if="${user != null}" class="userInfo">
+    <p th:text="${user.name}"></p>
+    <p th:text="${user.pwd}"></p>
+</div>
+</body>
+<script th:inline="javascript">
+    const accessToken = localStorage.getItem("accessToken");
+    const refreshToken = localStorage.getItem("refreshToken");
+    if (accessToken !== null && refreshToken !== null) {
+        $.ajax({
+            url: "http://localhost:8080/jwt-login/user",
+            header: {'Authorization': accessToken, 'Authorization_refresh': refreshToken},
+            type: 'GET',
+            success: function (result) {
+                $('.userInfo').innerText = result;
+            },
+            error: function () {
+                window.alert("No User Info");
+                location.href = "http://localhost:8080/jwt-login/home";
+            }
+        })
+    }
+</script>
+</html>

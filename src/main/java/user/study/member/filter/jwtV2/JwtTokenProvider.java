@@ -54,7 +54,6 @@ public class JwtTokenProvider {
 
 //    Authentication(사용자 정보 인증된 객체) 를 가지고 AccessToken, RefreshToken 생성
     public static UserResponseDto.TokenInfo generateToken(Authentication authentication){
-        System.out.println("secretKey: "+secretKey);
         String username = authentication.getName();
         String accessToken = generateAccessToken(username);
         String refreshToken = generateRefreshToken();

@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" charset="UTF-8">
+<html lang="en" id="rootHtml">
+<head th:replace="fragments/header :: header"/>
+<body>
+<div class="container">
+    <h2>login page</h2>
+    <br/>
+</div>
+<div class="form-group">
+    <label for="username">아이디</label>
+    <input type="text" id="username" class="form-control" required>
+    <label for="password">비밀번호</label>
+    <input type="password" id="password" class="form-control" required/>
+    <button class="btn btn-primary" id="submit-btn">로그인</button>
+</div>
+</body>
+<!-- script defer 속성은 src 가 명시됐을 때만 사용 가능-->
+<!-- head, body 사이에 script 넣었을 때 getElementById 가 null 을 가져와서 뒤로 뺐음 -->
+<script th:inline="javascript">
+    let accessToken;
+    let refreshToken;
+    $("#submit-btn").on("click", function () {
+        var name = $("#username").val();
+        var pwd = $("#password").val();
+        var foo = {
+            "name":name,
+            "pwd":pwd
+        }
+        $.ajax({
+            url:"http://localhost:8080/jwt-login/login",
+            type:"POST",
+            async:false,
+            headers:{'Content-Type':'application/json'},
+            data:JSON.stringify(foo), // WEB 에서 정보를 보낼 때 문자열이어야 한다
+            success:function(result){
+                console.log(result);
+                accessToken = result.accessToken;
+                refreshToken = result.refreshToken;
+                localStorage.setItem('accessToken',accessToken);
+                localStorage.setItem('refreshToken',refreshToken);
+                localStorage.setItem('accessTokenExpirationTime',result.accessTokenExpirationTime);
+            },
+            error:function(){
+                window.alert("로그인 정보가 잘못 됐습니다");
+            }
+        })
+        var result = postLogin(accessToken,refreshToken)
+        console.log("*** result ***\n"+result);
+        // console.log(document.getElementById("rootHtml").innerHTML);
+        document.getElementById("rootHtml").innerHTML = result;
+    });
+
+    function postLogin(accessToken, refreshToken){
+        let val;
+        if(accessToken !== undefined && refreshToken !== undefined){
+            console.log("accessToken: "+accessToken+" refreshToken: "+refreshToken);
+            $.ajax({
+                url:"http://localhost:8080/jwt-login/user",
+                type:"GET",
+                async:false, // 동기 방식으로 받아야 return 값이 undefined가 아니다
+                headers:{'Authorization':accessToken, 'Authorization_refresh':refreshToken},
+                success:function(result){
+                    val = result;
+                },
+                error:function(){
+                    window.alert("로그인 실패");
+                    return null;
+                }
+            })
+        }
+        return val;
+    }
+</script>
+<style>
+    .error-class {
+        color: red;
+    }
+
+    .error-input {
+        border-color: red;
+    }
+</style>
+</html>

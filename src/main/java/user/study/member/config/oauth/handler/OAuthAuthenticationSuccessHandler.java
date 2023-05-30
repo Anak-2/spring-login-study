@@ -32,7 +32,7 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         System.out.println("Call OAuth Authentication SuccessHandler");
-        String targetUrl = determineTargetUrl(request, response, authentication);
+        String targetUrl = "http://localhost:8080/jwt-login/home";
         if (response.isCommitted()) {
             this.logger.debug(LogMessage.format("Did not redirect to %s since response already committed.", targetUrl));
             return;

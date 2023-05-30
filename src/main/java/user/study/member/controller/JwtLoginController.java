@@ -42,14 +42,12 @@ public class JwtLoginController {
 //    로그인 페이지에서 로그인 처리하는 시도 -> application/x-www-form-urlencoded is not supported 오류 발생
 //    ToDo: @RestController 여서 모든 요청, 응답이 json 으로 받도록 되어있는 건가?
 //          @GetMapping(login) 시 @PostMapping(login) 작동 안하는 이유 찾기
-//    @GetMapping(value ="/login")
-//    public ModelAndView loginPage(HttpServletResponse response) throws IOException {
-////        String redirect_uri = "http://localhost:8080/jwt-login/login";
-////        response.sendRedirect(redirect_uri);
-//        ModelAndView mv = new ModelAndView("login");
-//        mv.addObject("formUser",new FormUser());
-//        return mv;
-//    }
+    @GetMapping(value ="/login")
+    public ModelAndView loginPage(HttpServletResponse response) throws IOException {
+        System.out.println("Call Get Login");
+        ModelAndView mv = new ModelAndView("jwtLogin");
+        return mv;
+    }
 
 //    로그인, JWT 생성
     @PostMapping(value ="/login")
@@ -75,11 +73,14 @@ public class JwtLoginController {
     // Tip : JWT를 사용하면 UserDetailsService를 호출하지 않기 때문에 @AuthenticationPrincipal 사용 불가능.
     // 왜냐하면 @AuthenticationPrincipal은 UserDetailsService에서 리턴될 때 만들어지기 때문이다.
     @GetMapping(value ="/user")
-    public User userPage(Authentication authentication){
+    public ModelAndView userPage(Authentication authentication){
+        System.out.println("/user Call!");
         PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
         User user = principalDetails2.getUser();
         System.out.println(user.toString());
-        return user;
+        ModelAndView mav = new ModelAndView("user");
+        mav.addObject("user",user);
+        return mav;
     }
 
     @GetMapping(value ="/admin")

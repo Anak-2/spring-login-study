@@ -51,9 +51,9 @@ public class JwtSecurityConfig {
 //        아래 방식 또는 FilterConfig 의 FilterRegistrationBean 이용
 //        http.addFilterBefore(new MyFilter1(),BasicAuthenticationFilter.class);
         http.csrf().disable();
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // disable the session
-                .and()
-                    .formLogin().disable()
+//        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS) // disable the session
+//                .and()
+                  http  .formLogin().disable()
                     .httpBasic().disable()
 //                    .addFilter(corsConfig.corsFilter())
 //                    .addFilter(new JwtAuthenticationFilter(authenticationManager()))
@@ -79,7 +79,7 @@ public class JwtSecurityConfig {
                 .and()
                 .successHandler(oAuthAuthenticationSuccessHandler)
                 .failureHandler(customAuthFailureHandelr)
-//                .defaultSuccessUrl("/security-login")
+//                .defaultSuccessUrl()
                 ;
         return http.build();
     }
