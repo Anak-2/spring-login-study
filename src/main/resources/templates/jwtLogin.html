@@ -36,30 +36,30 @@
             success:function(result){
                 console.log(result);
                 accessToken = result.accessToken;
-                refreshToken = result.refreshToken;
+                // refreshToken = result.refreshToken;
                 localStorage.setItem('accessToken',accessToken);
-                localStorage.setItem('refreshToken',refreshToken);
+                // localStorage.setItem('refreshToken',refreshToken);
                 localStorage.setItem('accessTokenExpirationTime',result.accessTokenExpirationTime);
             },
             error:function(){
                 window.alert("로그인 정보가 잘못 됐습니다");
             }
         })
-        var result = postLogin(accessToken,refreshToken)
-        console.log("*** result ***\n"+result);
-        // // console.log(document.getElementById("rootHtml").innerHTML);
-        // document.getElementById("rootHtml").innerHTML = result;
+        var result = postLogin(accessToken);
+        console.log("*** result ***\n" + JSON.stringify(result));
+        // console.log(document.getElementById("rootHtml").innerHTML);
+        document.getElementById("rootHtml").innerHTML = JSON.stringify(result);
     });
 
-    function postLogin(accessToken, refreshToken){
+    function postLogin(accessToken){
         let val;
-        if(accessToken !== undefined && refreshToken !== undefined){
-            console.log("accessToken: "+accessToken+" refreshToken: "+refreshToken);
+        if(accessToken !== undefined){
+            console.log("accessToken: "+accessToken);
             $.ajax({
                 url:"http://localhost:8080/jwt-login/user",
                 type:"GET",
                 async:false, // 동기 방식으로 받아야 return 값이 undefined가 아니다
-                headers:{'Authorization':accessToken, 'Authorization_refresh':refreshToken},
+                headers:{'Authorization':accessToken},
                 success:function(result){
                     val = result;
                 },

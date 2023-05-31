@@ -48,13 +48,14 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
 
         response.setContentType("text/html;charset=UTF-8");
         response.addHeader("Authorization", token.getAccessToken());
-        response.addHeader("Authorization_refresh",token.getRefreshToken());
+//        refreshToken 은 Http Only Cookie 에 저장해서 보내주기
+//        response.addHeader("Authorization_refresh",token.getRefreshToken());
         response.setContentType("application/json;charset=UTF-8");
 
 //      ****  Option 3. redirect URI 에 Token 정보 포함시키기 ****
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)
                     .queryParam("accessToken", token.getAccessToken())
-                    .queryParam("refreshToken", token.getRefreshToken())
+//                    .queryParam("refreshToken", token.getRefreshToken())
                     .build().toUriString();
 
         getRedirectStrategy().sendRedirect(request, response, targetUrl);

@@ -3,6 +3,7 @@ package user.study.member.controller;
 import ch.qos.logback.core.model.Model;
 import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +26,7 @@ import user.study.member.service.UserJwtService;
 import user.study.member.service.UserService;
 
 import java.io.IOException;
+import java.net.URLEncoder;
 
 // ToDo: JWT 를 이용한 Restful API 를 사용할 때 OAuth2 로그인 어떻게 처리할 지 생각하기 (OAuth2 로그인 성공 시 jwt 토큰을 어디서 발급해서 어떻게 줄까?)
 @RestController
@@ -59,9 +61,15 @@ public class JwtLoginController {
 
 //    로그인, JWT 생성
     @PostMapping(value ="/login")
-    public ResponseEntity<?> login(@RequestBody UserRequestDto.LoginDTO loginDTO){
+    public ResponseEntity<?> login(@RequestBody UserRequestDto.LoginDTO loginDTO, HttpServletResponse response) throws ServletException,IOException{
         UserResponseDto.TokenInfo tokenInfo = userJwtService.login(loginDTO.getName(), loginDTO.getPwd());
         if(tokenInfo != null){
+            Cookie cookie = new Cookie("refreshToken", URLEncoder.encode(tokenInfo.getRefreshToken(), "UTF-8"));
+            cookie.setMaxAge(tokenInfo.getRefreshTokenExpirationTime().intValue());
+            cookie.setSecure(true);
+            cookie.setHttpOnly(true);
+            cookie.setPath("/");
+            response.addCookie(cookie);
             return new ResponseEntity<>(tokenInfo, HttpStatus.OK);
         }else{
             return new ResponseEntity<>("로그인 처리 오류",HttpStatus.BAD_REQUEST);
@@ -81,7 +89,7 @@ public class JwtLoginController {
     // Tip : JWT를 사용하면 UserDetailsService를 호출하지 않기 때문에 @AuthenticationPrincipal 사용 불가능.
     // 왜냐하면 @AuthenticationPrincipal은 UserDetailsService에서 리턴될 때 만들어지기 때문이다.
     @GetMapping(value ="/user")
-    public User userPage(Authentication authentication){
+    public User userPage(HttpServletResponse response, Authentication authentication) throws IOException, ServletException{
         System.out.println("/user Call!");
         PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
         User user = principalDetails2.getUser();
