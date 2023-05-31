@@ -61,7 +61,8 @@ public class JwtAuthorizationFilter2 extends BasicAuthenticationFilter {
             }
         }
         if(authentication != null){
-            System.out.println(authentication.getName());
+            log.debug("인증 완료");
+            log.debug("인증 정보: {}",authentication);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
         filterChain.doFilter(request, response);

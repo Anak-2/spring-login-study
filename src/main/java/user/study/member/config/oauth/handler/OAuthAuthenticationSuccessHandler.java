@@ -12,6 +12,7 @@ import org.springframework.core.log.LogMessage;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.SimpleUrlAuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -33,25 +34,22 @@ public class OAuthAuthenticationSuccessHandler extends SimpleUrlAuthenticationSu
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
         System.out.println("Call OAuth Authentication SuccessHandler");
         String targetUrl = "http://localhost:8080/jwt-login/home";
-        if (response.isCommitted()) {
-            this.logger.debug(LogMessage.format("Did not redirect to %s since response already committed.", targetUrl));
-            return;
-        }
+//        if (response.isCommitted()) {
+//            this.logger.debug(LogMessage.format("Did not redirect to %s since response already committed.", targetUrl));
+//            return;
+//        }
         PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
         System.out.println("principalDetails2: "+principalDetails2.toEntity());
 //        SecurityContextHolder.getContext().setAuthentication(authentication); // session : stateless 라 그런지 redirect 되면서 저장한 값이 사라지나보다
         UserResponseDto.TokenInfo token = JwtTokenProvider.generateToken(authentication);
 
 //        Option 1. RestTemplate 이용해서 소셜 로그인을 한 사용자의 id 를 바디에 포함시켜서 ( /login , post 방식) 으로 보내주기
-//        Option 2. Response 에 TokenInfo 추가하기 --> redirect 돼서 그런지 새 request에 response 에 담은 정보가 없다
+//        Option 2. Response 에 TokenInfo 추가하기 --> redirect 돼서 그런지 새 request 와 response 에 담은 정보가 없다
 
-//        response.setContentType("application/json");
-//        PrintWriter writer = response.getWriter();
-//        ObjectMapper mapper = new ObjectMapper();
-//        String jsonString = mapper.writeValueAsString(token);
-//        writer.println(jsonString);
-//        response.setStatus(HttpStatus.TEMPORARY_REDIRECT.value());
-//        JSONObject jsonObject = new JSONObject();
+        response.setContentType("text/html;charset=UTF-8");
+        response.addHeader("Authorization", token.getAccessToken());
+        response.addHeader("Authorization_refresh",token.getRefreshToken());
+        response.setContentType("application/json;charset=UTF-8");
 
 //      ****  Option 3. redirect URI 에 Token 정보 포함시키기 ****
         targetUrl = UriComponentsBuilder.fromUriString(targetUrl)

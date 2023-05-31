@@ -149,6 +149,34 @@
 </div>
 </body>
 <script>
+    const searchParams = new URLSearchParams(location.search);
+    let accessToken = null;
+    let refreshToken = null;
+    for(const param of searchParams){
+        if(param[0] === 'accessToken'){
+            accessToken = param[1];
+            localStorage.setItem('accessToken',accessToken);
+        }else if(param[0] === 'refreshToken'){
+            refreshToken = param[1];
+            localStorage.setItem('refreshToken',refreshToken);
+        }
+    }
+    if(accessToken !== null){
+        console.log("Move to user.html");
+        $.ajax({
+            url:"http://localhost:8080/jwt-login/user",
+            type:"GET",
+            headers:{'Authorization':accessToken,'Authorization_refresh':refreshToken},
+            async:false,
+            success:function(result){
+                let url = "http://localhost:8080/userInfo.html";
+                location.replace(url);
+            },
+            error:function(){
+                alert("fail");
+            }
+        })
+    }
     $(".naver-btn").on('click', function(){
         location.href="/oauth2/authorization/naver";
     });

@@ -1,6 +1,9 @@
 package user.study.member.controller;
 
 import ch.qos.logback.core.model.Model;
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -16,6 +19,7 @@ import user.study.member.domain.dto.request.UserRequestDto;
 import user.study.member.domain.dto.response.UserResponseDto;
 import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
+import user.study.member.filter.jwtV2.JwtTokenProvider;
 import user.study.member.repository.UserJpaRepository;
 import user.study.member.service.UserJwtService;
 import user.study.member.service.UserService;
@@ -34,8 +38,12 @@ public class JwtLoginController {
 
     // 모든 사람이 접근 가능
     @GetMapping(value = "/home")
-    public ModelAndView home(HttpServletResponse response) throws IOException{
+    public ModelAndView home(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+        String accessToken = request.getParameter("accessToken");
         ModelAndView mv = new ModelAndView("home");
+        if(accessToken != null) {
+            System.out.println("accessToken: " + accessToken);
+        }
         return mv;
     }
 
@@ -73,14 +81,12 @@ public class JwtLoginController {
     // Tip : JWT를 사용하면 UserDetailsService를 호출하지 않기 때문에 @AuthenticationPrincipal 사용 불가능.
     // 왜냐하면 @AuthenticationPrincipal은 UserDetailsService에서 리턴될 때 만들어지기 때문이다.
     @GetMapping(value ="/user")
-    public ModelAndView userPage(Authentication authentication){
+    public User userPage(Authentication authentication){
         System.out.println("/user Call!");
         PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
         User user = principalDetails2.getUser();
         System.out.println(user.toString());
-        ModelAndView mav = new ModelAndView("user");
-        mav.addObject("user",user);
-        return mav;
+        return user;
     }
 
     @GetMapping(value ="/admin")
