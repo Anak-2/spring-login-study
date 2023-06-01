@@ -127,6 +127,7 @@
             </div>
             <a th:unless="${loginType == 'jwt-login'}" th:href="|@{/{loginType}/create(loginType=${loginType})}|">회원가입</a>
             <a th:if="${loginType == 'jwt-login'}" th:href="@{http://localhost:8080/jwtCreateMember.html}">회원가입</a>
+            <a href="http://localhost:8080/userInfo.html">정보 보러가기</a>
         </div>
         <div th:unless="${user == null}">
             <p>안녕하세요</p>
@@ -157,9 +158,10 @@
         if(param[0] === 'accessToken'){
             accessToken = param[1];
             localStorage.setItem('accessToken',accessToken);
-        }else if(param[0] === 'refreshToken'){
+        }
+        else if(param[0] === 'refreshToken'){
             refreshToken = param[1];
-            localStorage.setItem('refreshToken',refreshToken);
+            // localStorage.setItem('refreshToken',refreshToken);
         }
     }
     if(accessToken !== null){
@@ -191,6 +193,12 @@
         location.href="/oauth2/authorization/kakao";
     });
 
+    accessToken = localStorage.getItem('accessToken');
+    if(accessToken){
+        alert("Access Denied");
+        console.log(accessToken);
+        location.href="http://localhost:8080/userInfo.html";
+    }
 </script>
 <script th:inline="javascript">
     console.log([[${user}]]);

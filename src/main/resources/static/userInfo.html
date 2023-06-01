@@ -17,6 +17,8 @@
     <!-- Latest compiled JavaScript -->
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
+    <!--    logout Utility -->
+    <script src="js/logout.js" async></script>
     <!-- Font-Awesome  -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>My Login</title>
@@ -55,30 +57,46 @@
     </tr>
     </tbody>
 </table>
+    <input class="btn btn-secondary logout-btn" type="button" value="Sign out">
 </body>
 <script>
     let accessToken = localStorage.getItem("accessToken");
-    let refreshToken = localStorage.getItem("refreshToken");
+    // let refreshToken = localStorage.getItem("refreshToken");
     console.log(accessToken);
     if (accessToken !== null) {
         $.ajax({
             url: "http://localhost:8080/jwt-login/user",
             type: "GET",
-            headers: {'Authorization': accessToken, 'Authorization_refresh': refreshToken},
+            headers: {'Authorization': accessToken},
             async: false,
+            // ToDo: refresh token 을 filter 에서 알아서 꺼내서 access token 을 재발급 했는데 처리 힘듬
             success: function (result) {
-                console.log(result['name']);
+                console.log(result);
                 // var response = JSON.parse(result);
                 $('.id').text(result['id']);
                 $('.create-date').text(result['createDate']);
                 $('.email').text(result['email']);
                 $('.name').text(result['name']);
                 $('.role').text(result['role']);
+                if(result['accessToken']){ // refresh token 으로 access token 재발급 했을 경우 기존 access token 갈아치우기
+                    console.log("refresh accessToken");
+                    $('.id').text(result['user']['id']);
+                    $('.create-date').text(result['user']['createDate']);
+                    $('.email').text(result['user']['email']);
+                    $('.name').text(result['user']['name']);
+                    $('.role').text(result['user']['role']);
+                    localStorage.setItem("accessToken",result['accessToken']);
+                }
             },
             error: function () {
-                alert("fail");
+                alert("Require Sign in");
+                localStorage.removeItem("accessToken");
+                location.href="http://localhost:8080/jwt-login/home";
             }
         })
+    }else{
+        alert("You Don't have Access Token");
+        location.href="http://localhost:8080/jwt-login/home";
     }
 
     $('.fa-home').on("click",function(){

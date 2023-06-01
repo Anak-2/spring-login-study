@@ -10,11 +10,11 @@
 </body>
 <script th:inline="javascript">
     const accessToken = localStorage.getItem("accessToken");
-    const refreshToken = localStorage.getItem("refreshToken");
-    if (accessToken !== null && refreshToken !== null) {
+    // const refreshToken = localStorage.getItem("refreshToken");
+    if (accessToken !== null) {
         $.ajax({
             url: "http://localhost:8080/jwt-login/user",
-            header: {'Authorization': accessToken, 'Authorization_refresh': refreshToken},
+            header: {'Authorization': accessToken},
             type: 'GET',
             success: function (result) {
                 $('.userInfo').innerText = result;

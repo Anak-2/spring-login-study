@@ -8,11 +8,13 @@ import com.auth0.jwt.interfaces.DecodedJWT;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.server.ResponseStatusException;
 import user.study.member.config.auth.PrincipalDetails2;
 import user.study.member.domain.dto.response.UserResponseDto;
 import user.study.member.domain.user.Role;
@@ -60,9 +62,9 @@ public class JwtTokenProvider {
 
         return UserResponseDto.TokenInfo.builder()
                 .accessToken(accessToken)
-                .accessTokenExpirationTime(ACCESS_TOKEN_EXPIRE_TIME)
+                .accessTokenExpirationTime(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRE_TIME))
                 .refreshToken(refreshToken)
-                .refreshTokenExpirationTime(REFRESH_TOKEN_EXPIRE_TIME)
+                .refreshTokenExpirationTime(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRE_TIME))
                 .build();
     }
 
@@ -85,7 +87,8 @@ public class JwtTokenProvider {
     }
 
 //    RefreshToken 이 유효하면 user 정보로 AccessToken 재발급, user 정보가 맞지 않거나 accessToken이 유효하지 않으면 null 반환
-    public static String refreshAccessToken(String refreshToken, String accessToken){
+    public static String
+    refreshAccessToken(String refreshToken, String accessToken){
         try{
             DecodedJWT rJwt = JWT.require(HMAC512(secretKey)).build()
                     .verify(refreshToken);
@@ -95,10 +98,12 @@ public class JwtTokenProvider {
         }
         catch(TokenExpiredException e){
             log.error("Refresh Token is Expired on "+e.getExpiredOn());
+//            throw new TokenExpiredException("Refresh Token is Expired on ",e.getExpiredOn());
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Refresh Token is Expired on "+e.getExpiredOn(),e);
         }catch(SignatureVerificationException sve){
             log.error("Refresh Signature is invalidate");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Refresh Signature is invalidate",sve);
         }
-        return null;
     }
 
 //    JWT 토큰을 검증한 뒤 복호화하여 토큰에 들어있는 정보를 꺼내는 메서드
@@ -124,8 +129,10 @@ public class JwtTokenProvider {
 //        verify 과정 중 발생하는 오류 잡아주기
         catch(TokenExpiredException e){
             log.error("Access Token is Expired on "+e.getExpiredOn());
+//            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Access Token is Expired on "+e.getExpiredOn(),e);
         }catch(SignatureVerificationException sve){
             log.error("Access Signature is invalidate");
+            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Access Signature is invalidate",sve);
         }
         return null;
     }
