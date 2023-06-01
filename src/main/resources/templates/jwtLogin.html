@@ -4,6 +4,9 @@
 <head th:replace="fragments/header :: header"/>
 <body>
 <div class="container" style="width:70%;">
+    <div class="container" style="margin-top:20px; margin-bottom: 20px">
+        <i class="fa fa-home fa-lg" aria-hidden="true"></i>
+    </div>
     <h2>login page</h2>
     <br/>
 <div class="form-group">
@@ -40,6 +43,7 @@
                 localStorage.setItem('accessToken',accessToken);
                 // localStorage.setItem('refreshToken',refreshToken);
                 localStorage.setItem('accessTokenExpirationTime',result.accessTokenExpirationTime);
+                location.href="http://localhost:8080/userInfo.html";
             },
             error:function(){
                 window.alert("로그인 정보가 잘못 됐습니다");
@@ -71,6 +75,14 @@
         }
         return val;
     }
+    $('.fa-home').on("click",function(){
+        location.href="http://localhost:8080/jwt-login/home";
+    });
+    $('.fa-home').hover(function(){
+        $(this).css('cursor','pointer');
+    }, function(){
+        $(this).css('cursor','none');
+    })
 </script>
 <style>
     .error-class {
