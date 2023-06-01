@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head th:fragment="header">
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrinkto-fit=no">
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
+    <!-- Font-Awesome  -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"></script>
+    <title>My Login</title>
+</head>
+<body>
+<!-- Pills navs -->
+<ul class="nav nav-pills nav-justified mb-3" id="ex1" role="tablist">
+<!--    <li class="nav-item" role="presentation">-->
+<!--        <a class="nav-link" id="tab-login" data-mdb-toggle="pill" href="#pills-login" role="tab"-->
+<!--           aria-controls="pills-login" aria-selected="true">Login</a>-->
+<!--    </li>-->
+    <li class="nav-item" role="presentation">
+        <a class="nav-link active" id="tab-register" data-mdb-toggle="pill" href="#pills-register" role="tab"
+           aria-controls="pills-register" aria-selected="false">Register</a>
+    </li>
+</ul>
+<!-- Pills navs -->
+
+<!-- Pills content -->
+<div class="container" style="width:80%;">
+    <section class="vh-100">
+        <div class="container py-5 h-100">
+            <div class="row d-flex align-items-center justify-content-center h-100">
+                <div class="col-md-8 col-lg-7 col-xl-6">
+                    <img src="https://mdbcdn.b-cdn.net/img/Photos/new-templates/bootstrap-login-form/draw2.svg"
+                         class="img-fluid" alt="Phone image">
+                </div>
+                <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
+                    <form>
+                        <!-- Email input -->
+                        <div class="form-outline mb-4">
+                            <input type="text" id="username" class="form-control form-control-lg" />
+                            <label class="form-label" for="username">Username</label>
+                        </div>
+
+                        <!-- Password input -->
+                        <div class="form-outline mb-4">
+                            <input type="password" id="password" class="form-control form-control-lg" />
+                            <label class="form-label" for="password">Password</label>
+                        </div>
+
+                        <div class="d-flex justify-content-around align-items-center mb-4">
+                            <!-- Checkbox -->
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="show-password" />
+                                <label class="form-check-label" for="show-password"> Show Password </label>
+                            </div>
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="" id="form1Example3" checked />
+                                <label class="form-check-label" for="form1Example3"> Remember me </label>
+                            </div>
+                        </div>
+
+                        <button type=button id="submit-btn" class="btn btn-primary btn-lg btn-block">Sign up</button>
+
+                        <div class="divider d-flex align-items-center my-4">
+                            <p class="text-center fw-bold mx-3 mb-0 text-muted">OR</p>
+                        </div>
+
+                        <a class="btn btn-primary btn-lg btn-block" id="facebook-btn" style="background-color: #3b5998" href="#!"
+                           role="button">
+                            <i class="fab fa-facebook-f me-2" style="margin-right: 10px;"></i>Continue with Facebook
+                        </a>
+                        <a class="btn btn-primary btn-lg btn-block" id="google-btn" style="background-color: #55acee" href="#!"
+                           role="button">
+                            <i class="fab fa-google" style="margin-right: 10px;"></i>Continue with Google</a>
+
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+</div>
+<!-- Pills content -->
+</body>
+<script>
+    $("#facebook-btn").on('click', function(){
+        location.href="http://localhost:8080/oauth2/authorization/facebook";
+    });
+    $("#google-btn").on('click', function(){
+        location.href="http://localhost:8080/oauth2/authorization/google";
+    });
+    $('#submit-btn').on('click', function(){
+        let username = $('#username').val();
+        let password = $('#password').val();
+        if(username !== '' && password !== ''){
+            const user = {"name":username, "pwd":password};
+            console.log(user);
+            $.ajax({
+                url:"http://localhost:8080/jwt-login/join",
+                type:"POST",
+                data:JSON.stringify(user),
+                // header:{'Content-Type':'application/json; charset="UTF-8"'},
+                contentType:'application/json',
+                // async:false,
+                success:function(result){
+                    alert("회원가입 성공! 로그인 화면에서 로그인 해주세요");
+                    window.location.href="http://localhost:8080/jwt-login/home";
+                    console.log("여기 도달하면 안됨");
+                },
+                error:function(){
+                    alert("회원가입 실패");
+                }
+            })
+        }else{
+            if(username == '') $('#username').addClass("error-input");
+            if(password == '') $('#password').addClass("error-input");
+        }
+    });
+    $('#show-password').click(function(){
+        if($('#show-password').prop('checked')){
+            $('#password').prop('type','text');
+        }else{
+            $('#password').prop('type','password');
+        }
+    });
+</script>
+<style>
+    .error-class {
+        color: red;
+    }
+    .error-input {
+        border-color: red;
+    }
+</style>
+</html>

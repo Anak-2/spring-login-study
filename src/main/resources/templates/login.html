@@ -3,7 +3,7 @@
 <html lang="en">
 <head th:replace="fragments/header :: header" />
 <body>
-    <div class="container">
+    <div class="container" style="width:70%;">
         <h2>login page</h2>
         <form method="post" th:action="|@{/{loginType}/login (loginType=${loginType})}|" th:object="${formUser}" id="loginForm">
             <div th:if="${#fields.hasGlobalErrors()}">
