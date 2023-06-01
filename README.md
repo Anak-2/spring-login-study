@@ -29,5 +29,7 @@
 <img src="https://github.com/Anak-2/spring-login-study/assets/83941092/8d16c595-4a8a-4a86-96ff-f9fd5d66203f" width="600" height="600"/><br>
 <p><b>Join Success</b></p>
 <img src="https://github.com/Anak-2/spring-login-study/assets/83941092/b1498949-3b9f-45e5-9939-38ec75c28261" width="600" height="600"/><br>
+<p><b>OAuth Login (Google)</b></p>
+<img src="https://github.com/Anak-2/spring-login-study/assets/83941092/5e135098-e902-4ca4-8bc9-ba20f84daabf" width="600" height="600"/><br>
 <p><b>Inquire User Info</b></p>
 <img src="https://github.com/Anak-2/spring-login-study/assets/83941092/d2f03ffb-ec26-4147-ac87-855859a1f253" width="600" height="400"/>
