@@ -14,7 +14,7 @@
   <ul>
     <li>Normal Security Login (Normal Spring Security Chain Filter)</li>
     <li>OAuth Login (Google, Facebook, Kakao, Naver)</li>
-    <li>JWT Login (Use AccessToken, RefreshToken and Http Only Cookie)</li>
+    <li>JWT Login + OAuth Login(Use AccessToken, RefreshToken and Http Only Cookie)</li>
   </ul>
 </ul>
 <p><b>Home</b></p>
