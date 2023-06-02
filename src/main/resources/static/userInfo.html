@@ -60,7 +60,7 @@
     <input class="btn btn-secondary logout-btn" type="button" value="Sign out">
 </body>
 <script>
-    let accessToken = localStorage.getItem("accessToken");
+    let accessToken = sessionStorage.getItem("accessToken");
     // let refreshToken = localStorage.getItem("refreshToken");
     console.log(accessToken);
     if (accessToken !== null) {
@@ -70,27 +70,38 @@
             headers: {'Authorization': accessToken},
             async: false,
             // ToDo: refresh token 을 filter 에서 알아서 꺼내서 access token 을 재발급 했는데 처리 힘듬
-            success: function (result) {
-                console.log(result);
+            success: function (data, textStatus, request) {
                 // var response = JSON.parse(result);
-                $('.id').text(result['id']);
-                $('.create-date').text(result['createDate']);
-                $('.email').text(result['email']);
-                $('.name').text(result['name']);
-                $('.role').text(result['role']);
-                if(result['accessToken']){ // refresh token 으로 access token 재발급 했을 경우 기존 access token 갈아치우기
-                    console.log("refresh accessToken");
-                    $('.id').text(result['user']['id']);
-                    $('.create-date').text(result['user']['createDate']);
-                    $('.email').text(result['user']['email']);
-                    $('.name').text(result['user']['name']);
-                    $('.role').text(result['user']['role']);
-                    localStorage.setItem("accessToken",result['accessToken']);
+                $('.id').text(data['id']);
+                $('.create-date').text(data['createDate']);
+                $('.email').text(data['email']);
+                $('.name').text(data['name']);
+                $('.role').text(data['role']);
+                // 서버에서 201 을 보내면 새로운 Access Token 을 발행했다는 의미
+                console.log("request status: "+request.status);
+                if(request.status === 201){
+                    console.log("");
+                    console.log("=========================================");
+                    console.log("[testMain] : [http success]");
+                    console.log("-----------------------------------------");
+                    console.log("[header all] : " + request.getAllResponseHeaders());
+                    console.log("-----------------------------------------");
+                    console.log("[header content-type] : " + request.getResponseHeader('content-type'));
+                    console.log("-----------------------------------------");
+                    console.log("-----------------------------------------");
+                    console.log("[header authorization] : " + request.getResponseHeader('authorization'));
+                    console.log("-----------------------------------------");
+                    console.log("[textStatus] : " + JSON.stringify(textStatus));
+                    console.log("-----------------------------------------");
+                    console.log("[response data] : " + JSON.stringify(data));
+                    console.log("=========================================");
+                    console.log("");
+                    sessionStorage.setItem("accessToken",request.getResponseHeader('authorization'));
                 }
             },
             error: function () {
                 alert("Require Sign in");
-                localStorage.removeItem("accessToken");
+                sessionStorage.removeItem("accessToken");
                 location.href="http://localhost:8080/jwt-login/home";
             }
         })

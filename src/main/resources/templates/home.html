@@ -151,6 +151,7 @@
 </div>
 </body>
 <script>
+<!--    OAuth 로 로그인 시 URL 에 있는 accessToken 을 추출해서 localStorage 에 저장-->
     const searchParams = new URLSearchParams(location.search);
     let accessToken = null;
     let refreshToken = null;
@@ -193,12 +194,6 @@
         location.href="/oauth2/authorization/kakao";
     });
 
-    accessToken = localStorage.getItem('accessToken');
-    if(accessToken){
-        alert("Access Denied");
-        console.log(accessToken);
-        location.href="http://localhost:8080/userInfo.html";
-    }
 </script>
 <script th:inline="javascript">
     console.log([[${user}]]);

@@ -87,22 +87,24 @@ public class JwtTokenProvider {
     }
 
 //    RefreshToken 이 유효하면 user 정보로 AccessToken 재발급, user 정보가 맞지 않거나 accessToken이 유효하지 않으면 null 반환
-    public static String
-    refreshAccessToken(String refreshToken, String accessToken){
+    public static String refreshAccessToken(String refreshToken, String accessToken){
         try{
+//            RefreshToken 유효한지 검사
             DecodedJWT rJwt = JWT.require(HMAC512(secretKey)).build()
                     .verify(refreshToken);
+//            AccessToken 에서 사용자 정보 추출
             DecodedJWT jwt = JWT.decode(accessToken);
             String username = jwt.getClaim("username").asString();
+//            사용자 정보로 새 AccessToken 생성
             return generateAccessToken(username);
         }
         catch(TokenExpiredException e){
             log.error("Refresh Token is Expired on "+e.getExpiredOn());
 //            throw new TokenExpiredException("Refresh Token is Expired on ",e.getExpiredOn());
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Refresh Token is Expired on "+e.getExpiredOn(),e);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Refresh Token is Expired on "+e.getExpiredOn(),e);
         }catch(SignatureVerificationException sve){
             log.error("Refresh Signature is invalidate");
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Refresh Signature is invalidate",sve);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Refresh Signature is invalidate",sve);
         }
     }
 
@@ -115,6 +117,7 @@ public class JwtTokenProvider {
             DecodedJWT jwt = JWT.require(HMAC512(secretKey)).build()
                     .verify(accessToken);
             String username = jwt.getClaim("username").asString();
+            log.debug("username: {}",username);
             if (username != null && !username.equals("")) {
                 User user = userJpaRepository.findByName(username).orElse(null);
                 if(user != null){
@@ -126,13 +129,13 @@ public class JwtTokenProvider {
 //                static 메소드엔 static 변수만 사용할 수 있고, Autowired 변수는 static이 되면 안되기 때문에
 //                  사용하지 못해서 막힘. 다른 방법 고안해보기
         }
-//        verify 과정 중 발생하는 오류 잡아주기
+//        verify 과정 중 발생하는 오류 잡아주기 (throw 는 프론트에서 refresh token 발급할 때 주석 풀어주기)
         catch(TokenExpiredException e){
             log.error("Access Token is Expired on "+e.getExpiredOn());
-//            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Access Token is Expired on "+e.getExpiredOn(),e);
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Access Token is Expired on "+e.getExpiredOn(),e);
         }catch(SignatureVerificationException sve){
             log.error("Access Signature is invalidate");
-            throw new ResponseStatusException(HttpStatus.NOT_ACCEPTABLE,"Access Signature is invalidate",sve);
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED,"Access Signature is invalidate",sve);
         }
         return null;
     }

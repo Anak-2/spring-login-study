@@ -40,9 +40,9 @@
                 console.log(result);
                 accessToken = result.accessToken;
                 // refreshToken = result.refreshToken;
-                localStorage.setItem('accessToken',accessToken);
+                sessionStorage.setItem('accessToken',accessToken);
                 // localStorage.setItem('refreshToken',refreshToken);
-                localStorage.setItem('accessTokenExpirationTime',result.accessTokenExpirationTime);
+                sessionStorage.setItem('accessTokenExpirationTime',result.accessTokenExpirationTime);
                 location.href="http://localhost:8080/userInfo.html";
             },
             error:function(){

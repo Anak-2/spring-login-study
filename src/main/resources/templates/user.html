@@ -9,7 +9,7 @@
 </div>
 </body>
 <script th:inline="javascript">
-    const accessToken = localStorage.getItem("accessToken");
+    const accessToken = sessionStorage.getItem("accessToken");
     // const refreshToken = localStorage.getItem("refreshToken");
     if (accessToken !== null) {
         $.ajax({

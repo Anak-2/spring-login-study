@@ -7,7 +7,9 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -36,6 +38,7 @@ import java.time.LocalDateTime;
 @RestController
 @RequestMapping("/jwt-login")
 @RequiredArgsConstructor
+@Slf4j
 public class JwtLoginController {
 
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -121,13 +124,20 @@ public class JwtLoginController {
     @GetMapping(value ="/user")
     public ResponseEntity<?> userPage(HttpServletResponse response, Authentication authentication) throws IOException, ServletException{
         System.out.println("/user Call!");
+//        Filter 에서 생성한 response 의 헤더에 Authorization 이 있으면 accessToken 새로 생긴 것
+//        Filter 에서 이용한 Response 가 클라이언트한테 까지 전달되는 것이었다!
+//        그래서 밑에 HttpHeaders 에 또 추가할 필요 X
         String accessToken = response.getHeader("Authorization");
         PrincipalDetails2 principalDetails2 = (PrincipalDetails2) authentication.getPrincipal();
         User user = principalDetails2.getUser();
         System.out.println(user.toString());
         if(accessToken != null){
-            UserResponseDto.UserAndTokenInfo userAndTokenInfo = new UserResponseDto.UserAndTokenInfo(user, accessToken);
-            return new ResponseEntity<UserResponseDto.UserAndTokenInfo>(userAndTokenInfo,HttpStatus.OK);
+            log.debug("Refresh Access Token");
+            HttpHeaders headers = new HttpHeaders();
+//            Filter 에서 받은 Response 에 addHeader 하면 클라이언트 한테까지 전달됨!
+//            headers.add("Authorization",accessToken);
+//            return new ResponseEntity<User>(user,headers,HttpStatus.CREATED);
+            return new ResponseEntity<User>(user,HttpStatus.CREATED);
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }
