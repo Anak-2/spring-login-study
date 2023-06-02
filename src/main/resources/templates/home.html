@@ -158,11 +158,11 @@
     for(const param of searchParams){
         if(param[0] === 'accessToken'){
             accessToken = param[1];
-            localStorage.setItem('accessToken',accessToken);
+            sessionStorage.setItem('accessToken',accessToken);
         }
         else if(param[0] === 'refreshToken'){
             refreshToken = param[1];
-            // localStorage.setItem('refreshToken',refreshToken);
+            // sessionStorage.setItem('refreshToken',refreshToken);
         }
     }
     if(accessToken !== null){
