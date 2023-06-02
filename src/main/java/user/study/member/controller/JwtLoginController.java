@@ -11,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -25,6 +26,7 @@ import user.study.member.domain.user.Role;
 import user.study.member.domain.user.User;
 import user.study.member.filter.jwtV2.JwtTokenProvider;
 import user.study.member.global.exception.NotAuthorizedException;
+import user.study.member.global.httpStatus.CustomHttpStatus;
 import user.study.member.repository.UserJpaRepository;
 import user.study.member.service.UserJwtService;
 import user.study.member.service.UserService;
@@ -133,11 +135,11 @@ public class JwtLoginController {
         System.out.println(user.toString());
         if(accessToken != null){
             log.debug("Refresh Access Token");
-            HttpHeaders headers = new HttpHeaders();
+//            HttpHeaders headers = new HttpHeaders();
 //            Filter 에서 받은 Response 에 addHeader 하면 클라이언트 한테까지 전달됨!
 //            headers.add("Authorization",accessToken);
 //            return new ResponseEntity<User>(user,headers,HttpStatus.CREATED);
-            return new ResponseEntity<User>(user,HttpStatus.CREATED);
+            return new ResponseEntity<User>(user, HttpStatus.CREATED);
         }
         return new ResponseEntity<User>(user, HttpStatus.OK);
     }

@@ -78,6 +78,7 @@
                 $('.name').text(data['name']);
                 $('.role').text(data['role']);
                 // 서버에서 201 을 보내면 새로운 Access Token 을 발행했다는 의미
+                // 또는 request.getResponseHeader('authorization') 가 null 인지 아닌지로 처리해도 좋다
                 console.log("request status: "+request.status);
                 if(request.status === 201){
                     console.log("");
